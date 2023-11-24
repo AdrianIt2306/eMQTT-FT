@@ -86,22 +86,26 @@ def subscribe(client: mqtt):
                     #print(f"Part Number:  `{chunk.get('part')}` | Message Part `{chunk.get('message')}` ")
                     chunked_converted=chunked_converted+chunk.get('message')
                 file_converted = bytes(chunked_converted, 'utf-8')
-                print(type(chunked_converted))
-                print(type(file_converted))
+                #file_converted = bytes(chunked_converted)
+                #print(chunked_converted)
+                print((file_converted))
                 print(len(chunked_converted))
                 file_name=os.path.basename(IN_TX_META[TX_ID[1]].get('name'))
                 file_extension_type = get_extension(file_name)
                 print(file_extension_type)
                 full_path = os.getenv("MQTT_FT_CONTENT_LOCATION")+file_name
                 print(full_path)
-                #im = Image.open(BytesIO(base64.b64decode(chunked_converted)))                    
+
                 #im.save(full_path, str(file_extension_type))
                 try:
-                    #with open(full_path, "wb") as f:
-                    #    f.write(chunked_converted)
-                    im = Image.open(BytesIO(base64.b64decode(chunked_converted)))                    
-                    im.save(full_path, file_extension_type)
+                    #im = Image.open(BytesIO(base64.b64decode(chunked_converted)))   
+                    final_file = base64.b64decode(chunked_converted)
+                    print(final_file)                 
+                    #im.save(full_path, file_extension_type)
+                    with open(full_path, 'wb') as archivo:
+                        archivo.write(final_file)
                     print("Image saved successfully")
+
                     ct = datetime.datetime.now()
                     print("Finish time 02:-", ct)  
                 except:
@@ -118,5 +122,3 @@ def subscribe(client: mqtt):
 client = connect_mqtt()
 subscribe(client)
 client.loop_forever()
-
-
